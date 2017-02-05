@@ -1,5 +1,7 @@
 <?php
 
+namespace Egapool\SimpleCurl;
+
 class Curl
 {
 
