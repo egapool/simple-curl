@@ -29,7 +29,7 @@ class Curl
 	/**
 	 * Basic認証ユーザーとパスワード
 	 */
-	private $basicUserAndPass = null;
+	private $basicIdPass = null;
 
 	/**
 	 * HTTPリクエストヘッダー
@@ -39,12 +39,12 @@ class Curl
 	/**
 	 * レスポンスの詳細情報
 	 */
-	private $responseInfo = null;
+	private $resInfo = null;
 
 	/**
 	 * レスポンスボディ
 	 */
-	private $responseBody = null;
+	private $resBody = null;
 
 	/**
 	 * レスポンスエラーテキスト
@@ -59,7 +59,7 @@ class Curl
 	private $errorNo = null;
 
 	/**
-	 * インスタンス生成時にcURLハンドル
+	 * インスタンス生成時にcURLハンドル、
 	 * インスタンス生成時にCookie用リソース生成
 	 */
 	public function __construct()
@@ -89,7 +89,7 @@ class Curl
 	 */
 	public function setBasic(String $username, String $password)
 	{
-		$this->basicUserAndPass = $username . ":" . $password;
+		$this->basicIdPass = $username . ":" . $password;
 		return $this;
 	}
 
@@ -121,12 +121,12 @@ class Curl
 
 	public function getInfo()
 	{
-		return $this->responseInfo;
+		return $this->resInfo;
 	}
 
 	public function getBody()
 	{
-		return $this->responseBody;
+		return $this->resBody;
 	}
 
 	public function getError()
@@ -155,14 +155,14 @@ class Curl
 			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1, // HTTP/1.1 を使用する
 			CURLOPT_URL            => $this->url,            // 取得するURL
 			CURLOPT_RETURNTRANSFER => true,                  // TRUE を設定すると、curl_exec()の返り値を文字列で返します。
-			// CURLOPT_HEADER         => true,                  // レスポンスヘッダー情報を取得するか
+			CURLOPT_HEADER         => true,                  // レスポンスヘッダー情報を取得するか
 			CURLOPT_FOLLOWLOCATION => true,                  // リダイレクト先まで追跡するか(通常true推奨か？)
-			// CURLINFO_HEADER_OUT    => true,                  // リダイレクト先まで追跡するか(通常true推奨か？)
-			CURLOPT_MAXREDIRS      => 1,                     // 何回リダイレクトを許すか
+			CURLOPT_MAXREDIRS      => 2,                     // 何回リダイレクトを許すか
 			CURLOPT_COOKIEJAR      => $cookie,               // ハンドルを閉じる際、すべての内部クッキーを保存するファイルの名前
 			CURLOPT_COOKIEFILE     => $cookie,               // クッキーのデータを保持するファイルの名前
 			CURLOPT_TIMEOUT        => 10,                    //
 			CURLOPT_CONNECTTIMEOUT => 10,                    //
+			// CURLINFO_HEADER_OUT    => true,                  // 送信ヘッダの取得を取得
 			// CURLOPT_VERBOSE        => true,                  // 詳細な情報を出力します。情報は STDERR か、または CURLOPT_STDERR で指定したファイルに出力されます
 			// CURLOPT_STDERR         => fopen(APPPATH."tmp/curl_logs/".date('Ymd'),"a") // ログ吐き出されないなぁ〜
 		]);
@@ -172,18 +172,17 @@ class Curl
 			curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST,'POST');
 		}
 
-		if ( !is_null($this->basicUserAndPass) ) {
-			curl_setopt($this->ch, CURLOPT_USERPWD,$this->basicUserAndPass);
+		if ( !is_null($this->basicIdPass) ) {
+			curl_setopt($this->ch, CURLOPT_USERPWD,$this->basicIdPass);
 		}
 
 		if ( $this->httpHeader !== [] ) {
 			curl_setopt($this->ch, CURLOPT_HTTPHEADER,$this->httpHeader);
 		}
 
-		// 何かログ残してもいいかな
-		$this->responseBody = curl_exec($this->ch);
-		$this->responseInfo = curl_getinfo($this->ch);
-		$this->error = curl_error($this->ch);
+		$this->resBody 	= curl_exec($this->ch);
+		$this->resInfo 	= curl_getinfo($this->ch);
+		$this->error 		= curl_error($this->ch);
 
 		// 転送後は転送に使用したオプション等をリセット
 		$this->resetSettings();
@@ -208,10 +207,10 @@ class Curl
 	 */
 	private function resetSettings()
 	{
-		$this->url 				= null;
-		$this->postData 		= null;
-		$this->basicUserAndPass = null;
-		$this->httpHeader 		= [];
+		$this->url 				 = null;
+		$this->postData 	 = null;
+		$this->basicIdPass = null;
+		$this->httpHeader  = [];
 
 		// すべてのオプションをリセットする
 		curl_reset($this->ch);
@@ -222,9 +221,9 @@ class Curl
 	 */
 	private function resetResponses()
 	{
-		$this->responseInfo 	= null;
-		$this->responseBody		= null;
-		$this->error 			= null;
-		$this->errorNo 			= null;
+		$this->resInfo 	= null;
+		$this->resBody	= null;
+		$this->error 		= null;
+		$this->errorNo 	= null;
 	}
 }
