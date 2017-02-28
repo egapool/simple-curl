@@ -26,3 +26,4 @@ echo $curl->setUrl('https://google.co.jp')->fire()->getBody();
 - [ ] レスポンスヘッダーのパース
 - [ ] `Curl::fire`やめて`post`,`get`に
 - [ ] curl_optのパラメータをもうちょい柔軟に
+- [ ] UserAgentをリストから選択できるように
