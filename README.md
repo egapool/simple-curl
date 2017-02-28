@@ -19,3 +19,9 @@ $curl = new Curl();
 echo $curl->setUrl('https://google.co.jp')->fire()->getBody();
 
 ```
+
+## todo
+
+- [ ] レスポンスヘッダーのパース
+- [ ] `Curl::fire`やめて`post`,`get`に
+- [ ] curl_optのパラメータをもうちょい柔軟に
