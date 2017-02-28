@@ -1,5 +1,7 @@
 # simple-curl
-simple curl wrapper
+Simple Curl Wrapper.
+
+It is possible to send cookies. So you can use it for requests to pages that require login.
 
 ## install
 
