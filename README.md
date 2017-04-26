@@ -12,7 +12,7 @@ composer require egapool/simple-curl
 ## usage
 
 ```
-use Egapool\SimpleCurl\Curl
+use Egapool\SimpleCurl\Curl;
 require('vendor/autoload.php');
 
 $curl = new Curl();
